@@ -138,6 +138,14 @@ function initializeGrid() {
             width: 180
         },
         {
+            field: 'total_gross',
+            headerName: 'Total',
+            width: 130,
+            type: 'numericColumn',
+            valueFormatter: params => formatCurrencyFull(params.value),
+            cellStyle: { fontWeight: '700', color: '#1a365d' }
+        },
+        {
             field: 'regular',
             headerName: 'Regular',
             width: 120,
@@ -164,14 +172,6 @@ function initializeGrid() {
             width: 110,
             type: 'numericColumn',
             valueFormatter: params => formatCurrencyFull(params.value)
-        },
-        {
-            field: 'total_gross',
-            headerName: 'Total',
-            width: 130,
-            type: 'numericColumn',
-            valueFormatter: params => formatCurrencyFull(params.value),
-            cellStyle: { fontWeight: '700', color: '#1a365d' }
         }
     ];
 
