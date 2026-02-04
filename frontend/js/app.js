@@ -125,7 +125,7 @@ async function loadEmployees() {
         if (!grid) {
             initializeGrid();
         } else {
-            grid.api.setGridOption('rowData', employeesData);
+            grid.api.setRowData(employeesData);
         }
     } catch (error) {
         console.error('Error loading employees:', error);
@@ -200,11 +200,14 @@ function initializeGrid() {
         },
         pagination: true,
         paginationPageSize: 50,
-        domLayout: 'normal'
+        domLayout: 'normal',
+        onGridReady: (params) => {
+            grid = params;
+        }
     };
 
     const gridDiv = document.getElementById('employees-grid');
-    grid = agGrid.createGrid(gridDiv, gridOptions);
+    agGrid.createGrid(gridDiv, gridOptions);
 }
 
 // Format variance display
