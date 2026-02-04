@@ -22,8 +22,8 @@ function formatCurrency(value) {
 
 function formatCurrencyFull(value) {
     return '$' + Number(value).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     });
 }
 
