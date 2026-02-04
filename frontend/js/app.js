@@ -1,6 +1,6 @@
 // API Configuration
 const API_BASE = window.location.hostname === 'localhost'
-    ? 'http://localhost:8001'
+    ? 'http://localhost:8002'
     : '';
 
 // Global state
@@ -377,7 +377,7 @@ async function loadDepartmentChart() {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
                             // More offset for labels inside bars to prevent clipping
-                            return value / max > 0.25 ? -20 : 4;
+                            return value / max > 0.25 ? -50 : 4;
                         },
                         formatter: (value) => formatCurrency(value),
                         color: (context) => {

@@ -50,6 +50,10 @@ class Stats(BaseModel):
     total_detail: Decimal
     top_department: str
     top_department_total: Decimal
+    prior_year_employees: Optional[int]
+    prior_year_payroll: Optional[Decimal]
+    prior_year_avg_salary: Optional[Decimal]
+    prior_year_overtime: Optional[Decimal]
 
 class EarningsBreakdown(BaseModel):
     year: int
