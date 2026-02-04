@@ -69,8 +69,8 @@ function setupEventListeners() {
     document.getElementById('search-input').addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            if (grid) {
-                grid.api.setGridOption('quickFilterText', e.target.value);
+            if (grid && grid.api) {
+                grid.api.setQuickFilter(e.target.value);
             }
         }, 300);
     });
