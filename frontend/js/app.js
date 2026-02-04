@@ -1,7 +1,7 @@
 // API Configuration
 const API_BASE = window.location.hostname === 'localhost'
-    ? 'http://localhost:8002'
-    : '';
+    ? 'http://localhost:8001'
+    : 'https://boston-payroll-api.onrender.com';
 
 // Global state
 let currentYear = 2024;
