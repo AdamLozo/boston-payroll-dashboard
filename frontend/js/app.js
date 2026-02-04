@@ -27,6 +27,20 @@ function formatCurrencyFull(value) {
     });
 }
 
+// Update page titles based on filter
+function updateTitles() {
+    const deptTitle = document.querySelector('.chart-card:first-child h3');
+    const earningsTitle = document.querySelector('.chart-card:last-child h3');
+
+    if (currentDepartment) {
+        deptTitle.textContent = `Top Departments by Total Earnings (${currentYear})`;
+        earningsTitle.textContent = `${currentDepartment} - Earnings Composition (${currentYear})`;
+    } else {
+        deptTitle.textContent = `Top Departments by Total Earnings (${currentYear})`;
+        earningsTitle.textContent = `Earnings Composition (${currentYear})`;
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
     // Register datalabels plugin globally
@@ -88,6 +102,7 @@ async function loadDepartments() {
 
 // Load all data
 async function loadData() {
+    updateTitles();
     await Promise.all([
         loadEmployees(),
         loadStats(),
@@ -300,10 +315,30 @@ async function loadDepartmentChart() {
                         }
                     },
                     datalabels: {
-                        anchor: 'end',
-                        align: 'end',
+                        anchor: (context) => {
+                            // Use 'end' for bars that fit inside, 'center' for smaller bars
+                            const value = context.dataset.data[context.dataIndex];
+                            const max = Math.max(...context.dataset.data);
+                            return value / max > 0.15 ? 'end' : 'end';
+                        },
+                        align: (context) => {
+                            const value = context.dataset.data[context.dataIndex];
+                            const max = Math.max(...context.dataset.data);
+                            // If bar is long enough, put label inside
+                            return value / max > 0.15 ? 'start' : 'end';
+                        },
+                        offset: (context) => {
+                            const value = context.dataset.data[context.dataIndex];
+                            const max = Math.max(...context.dataset.data);
+                            return value / max > 0.15 ? -10 : 4;
+                        },
                         formatter: (value) => formatCurrency(value),
-                        color: '#1a202c',
+                        color: (context) => {
+                            const value = context.dataset.data[context.dataIndex];
+                            const max = Math.max(...context.dataset.data);
+                            // White text for labels inside bars
+                            return value / max > 0.15 ? '#ffffff' : '#1a202c';
+                        },
                         font: {
                             weight: 'bold',
                             size: 11
@@ -363,13 +398,13 @@ async function loadEarningsChart() {
                         data.percentages.quinn_education
                     ],
                     totals: [
-                        data.totals.regular,
-                        data.totals.overtime,
-                        data.totals.detail,
-                        data.totals.retro,
-                        data.totals.other,
-                        data.totals.injured,
-                        data.totals.quinn_education
+                        data.breakdown.regular,
+                        data.breakdown.overtime,
+                        data.breakdown.detail,
+                        data.breakdown.retro,
+                        data.breakdown.other,
+                        data.breakdown.injured,
+                        data.breakdown.quinn_education
                     ],
                     backgroundColor: [
                         '#4299e1',
