@@ -311,8 +311,8 @@ async function loadDepartmentChart() {
                     ),
                     fullNames: top10.map(d => d.name), // Store full names for filtering
                     employeeCounts: top10.map(d => d.employee_count),
-                    avgSalaries: top10.map(d => d.avg_earnings),
-                    avgOvertimes: top10.map(d => d.avg_overtime)
+                    avgSalaries: top10.map(d => Math.round(d.avg_earnings)),
+                    avgOvertimes: top10.map(d => Math.round(d.avg_overtime))
                 }]
             },
             options: {
