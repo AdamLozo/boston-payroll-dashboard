@@ -37,6 +37,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def root():
+    """Root endpoint for health checks."""
+    return {"status": "ok", "service": "Boston Payroll API"}
+
+@app.get("/health")
+def health_simple():
+    """Simple health check endpoint for Render."""
+    return {"status": "healthy"}
+
 @app.get("/api/health", response_model=HealthResponse)
 def health():
     """Health check endpoint."""
