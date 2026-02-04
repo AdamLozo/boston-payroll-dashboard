@@ -110,6 +110,38 @@ def get_stats(year: int = 2024, department: Optional[str] = None) -> Dict[str, A
             cur.execute(sql, params)
             stats = dict(cur.fetchone())
 
+            # Get prior year stats for comparison
+            prior_year = year - 1
+            prior_where_sql = "year = %s"
+            prior_params = [prior_year]
+
+            if department:
+                prior_where_sql += " AND department = %s"
+                prior_params.append(department)
+
+            prior_sql = f"""
+                SELECT
+                    COUNT(*) as total_employees,
+                    SUM(total_gross) as total_payroll,
+                    AVG(total_gross) as avg_salary,
+                    SUM(overtime) as total_overtime
+                FROM payroll_earnings
+                WHERE {prior_where_sql}
+            """
+            cur.execute(prior_sql, prior_params)
+            prior_stats = cur.fetchone()
+
+            if prior_stats and prior_stats['total_employees']:
+                stats['prior_year_employees'] = prior_stats['total_employees']
+                stats['prior_year_payroll'] = prior_stats['total_payroll']
+                stats['prior_year_avg_salary'] = prior_stats['avg_salary']
+                stats['prior_year_overtime'] = prior_stats['total_overtime']
+            else:
+                stats['prior_year_employees'] = None
+                stats['prior_year_payroll'] = None
+                stats['prior_year_avg_salary'] = None
+                stats['prior_year_overtime'] = None
+
             # Top department (if not filtering by department)
             if not department:
                 top_dept_sql = """

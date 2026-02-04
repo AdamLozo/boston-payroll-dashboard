@@ -207,6 +207,29 @@ function initializeGrid() {
     grid = agGrid.createGrid(gridDiv, gridOptions);
 }
 
+// Format variance display
+function formatVariance(current, prior, isPositiveGood = false) {
+    if (!prior || prior === 0) {
+        return '';
+    }
+
+    const diff = current - prior;
+    const pctChange = ((diff / prior) * 100).toFixed(1);
+    const arrow = diff > 0 ? '▲' : '▼';
+    const className = diff > 0 ? 'positive' : 'negative';
+
+    let diffStr;
+    if (Math.abs(current) >= 1000000) {
+        diffStr = formatCurrency(Math.abs(diff));
+    } else if (Math.abs(current) >= 1000) {
+        diffStr = Math.abs(diff).toLocaleString('en-US', {maximumFractionDigits: 0});
+    } else {
+        diffStr = Math.abs(diff).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    return { text: `${arrow} ${diffStr} (${Math.abs(pctChange)}%)`, className };
+}
+
 // Load stats
 async function loadStats() {
     try {
@@ -226,8 +249,30 @@ async function loadStats() {
             formatCurrencyFull(stats.avg_salary);
         document.getElementById('stat-overtime').textContent =
             formatCurrency(stats.total_overtime);
+
+        // Update variance indicators
+        const employeesVar = formatVariance(stats.total_employees, stats.prior_year_employees);
+        const payrollVar = formatVariance(stats.total_payroll, stats.prior_year_payroll);
+        const avgVar = formatVariance(stats.avg_salary, stats.prior_year_avg_salary);
+        const overtimeVar = formatVariance(stats.total_overtime, stats.prior_year_overtime);
+
+        updateVarianceElement('stat-employees-variance', employeesVar);
+        updateVarianceElement('stat-payroll-variance', payrollVar);
+        updateVarianceElement('stat-average-variance', avgVar);
+        updateVarianceElement('stat-overtime-variance', overtimeVar);
     } catch (error) {
         console.error('Error loading stats:', error);
+    }
+}
+
+function updateVarianceElement(elementId, variance) {
+    const element = document.getElementById(elementId);
+    if (variance) {
+        element.textContent = variance.text;
+        element.className = 'stat-variance ' + variance.className;
+    } else {
+        element.textContent = '';
+        element.className = 'stat-variance';
     }
 }
 
@@ -306,38 +351,40 @@ async function loadDepartmentChart() {
                             label: (context) => {
                                 const index = context.dataIndex;
                                 const dataset = window.deptChart.data.datasets[0];
+                                const avgSalary = dataset.avgSalaries[index] || 0;
+                                const avgOvertime = dataset.avgOvertimes[index] || 0;
                                 return [
                                     `Employees: ${dataset.employeeCounts[index].toLocaleString()}`,
-                                    `Avg Salary: ${formatCurrencyFull(dataset.avgSalaries[index])}`,
-                                    `Avg Overtime: ${formatCurrencyFull(dataset.avgOvertimes[index])}`
+                                    `Avg Salary: ${formatCurrencyFull(avgSalary)}`,
+                                    `Avg Overtime: ${formatCurrencyFull(avgOvertime)}`
                                 ];
                             }
                         }
                     },
                     datalabels: {
                         anchor: (context) => {
-                            // Use 'end' for bars that fit inside, 'center' for smaller bars
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
-                            return value / max > 0.15 ? 'end' : 'end';
+                            return value / max > 0.25 ? 'end' : 'end';
                         },
                         align: (context) => {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
-                            // If bar is long enough, put label inside
-                            return value / max > 0.15 ? 'start' : 'end';
+                            // If bar is long enough, put label inside with more padding
+                            return value / max > 0.25 ? 'start' : 'end';
                         },
                         offset: (context) => {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
-                            return value / max > 0.15 ? -10 : 4;
+                            // More offset for labels inside bars to prevent clipping
+                            return value / max > 0.25 ? -20 : 4;
                         },
                         formatter: (value) => formatCurrency(value),
                         color: (context) => {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
                             // White text for labels inside bars
-                            return value / max > 0.15 ? '#ffffff' : '#1a202c';
+                            return value / max > 0.25 ? '#ffffff' : '#1a202c';
                         },
                         font: {
                             weight: 'bold',

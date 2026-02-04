@@ -114,6 +114,21 @@ body {
     margin-bottom: 4px;
 }
 
+.stat-variance {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    min-height: 20px;
+}
+
+.stat-variance.positive {
+    color: #c53030;
+}
+
+.stat-variance.negative {
+    color: #38a169;
+}
+
 .stat-label {
     font-size: 0.875rem;
     color: var(--text-muted);
