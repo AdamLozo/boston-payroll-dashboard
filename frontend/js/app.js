@@ -249,7 +249,10 @@ async function loadDepartmentChart() {
                     backgroundColor: top10.map(d =>
                         d.name === currentDepartment ? '#1a365d' : '#2b6cb0'
                     ),
-                    fullNames: top10.map(d => d.name) // Store full names for filtering
+                    fullNames: top10.map(d => d.name), // Store full names for filtering
+                    employeeCounts: top10.map(d => d.employee_count),
+                    avgSalaries: top10.map(d => d.avg_salary),
+                    avgOvertimes: top10.map(d => d.avg_overtime)
                 }]
             },
             options: {
@@ -281,7 +284,19 @@ async function loadDepartmentChart() {
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: (context) => formatCurrency(context.raw)
+                            title: (context) => {
+                                const index = context[0].dataIndex;
+                                return window.deptChart.data.datasets[0].fullNames[index];
+                            },
+                            label: (context) => {
+                                const index = context.dataIndex;
+                                const dataset = window.deptChart.data.datasets[0];
+                                return [
+                                    `Employees: ${dataset.employeeCounts[index].toLocaleString()}`,
+                                    `Avg Salary: ${formatCurrencyFull(dataset.avgSalaries[index])}`,
+                                    `Avg Overtime: ${formatCurrencyFull(dataset.avgOvertimes[index])}`
+                                ];
+                            }
                         }
                     },
                     datalabels: {
@@ -347,6 +362,15 @@ async function loadEarningsChart() {
                         data.percentages.injured,
                         data.percentages.quinn_education
                     ],
+                    totals: [
+                        data.totals.regular,
+                        data.totals.overtime,
+                        data.totals.detail,
+                        data.totals.retro,
+                        data.totals.other,
+                        data.totals.injured,
+                        data.totals.quinn_education
+                    ],
                     backgroundColor: [
                         '#4299e1',
                         '#ed8936',
@@ -368,8 +392,9 @@ async function loadEarningsChart() {
                     tooltip: {
                         callbacks: {
                             label: (context) => {
-                                const value = context.parsed.y || 0;
-                                return `${value.toFixed(1)}%`;
+                                const index = context.dataIndex;
+                                const total = window.earningsChart.data.datasets[0].totals[index];
+                                return `Total: ${formatCurrency(total)}`;
                             }
                         }
                     },
