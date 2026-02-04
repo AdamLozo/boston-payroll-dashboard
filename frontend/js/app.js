@@ -8,6 +8,7 @@ let currentYear = 2024;
 let currentDepartment = '';
 let employeesData = [];
 let grid = null;
+let isFilteringFromChart = false; // Prevent circular filtering
 
 // Format currency
 function formatCurrency(value) {
@@ -28,6 +29,9 @@ function formatCurrencyFull(value) {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
+    // Register datalabels plugin globally
+    Chart.register(ChartDataLabels);
+
     await loadDepartments();
     setupEventListeners();
     await loadData();
@@ -41,8 +45,10 @@ function setupEventListeners() {
     });
 
     document.getElementById('department-filter').addEventListener('change', (e) => {
-        currentDepartment = e.target.value;
-        loadData();
+        if (!isFilteringFromChart) {
+            currentDepartment = e.target.value;
+            loadData();
+        }
     });
 
     let searchTimeout;
@@ -218,7 +224,7 @@ async function loadCharts() {
     ]);
 }
 
-// Department bar chart
+// Department bar chart with click handler
 async function loadDepartmentChart() {
     try {
         const response = await fetch(`${API_BASE}/api/departments?year=${currentYear}`);
@@ -240,13 +246,37 @@ async function loadDepartmentChart() {
                 datasets: [{
                     label: 'Total Earnings',
                     data: top10.map(d => d.total_earnings),
-                    backgroundColor: '#2b6cb0'
+                    backgroundColor: top10.map(d =>
+                        d.name === currentDepartment ? '#1a365d' : '#2b6cb0'
+                    ),
+                    fullNames: top10.map(d => d.name) // Store full names for filtering
                 }]
             },
             options: {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const fullName = window.deptChart.data.datasets[0].fullNames[index];
+
+                        // Toggle filter
+                        isFilteringFromChart = true;
+                        if (currentDepartment === fullName) {
+                            currentDepartment = '';
+                        } else {
+                            currentDepartment = fullName;
+                        }
+
+                        // Update dropdown to match
+                        document.getElementById('department-filter').value = currentDepartment;
+                        isFilteringFromChart = false;
+
+                        // Reload data
+                        loadData();
+                    }
+                },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
