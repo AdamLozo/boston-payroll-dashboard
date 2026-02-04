@@ -362,29 +362,26 @@ async function loadDepartmentChart() {
                         }
                     },
                     datalabels: {
-                        anchor: (context) => {
-                            const value = context.dataset.data[context.dataIndex];
-                            const max = Math.max(...context.dataset.data);
-                            return value / max > 0.25 ? 'end' : 'end';
-                        },
+                        display: true,
+                        anchor: 'end',
                         align: (context) => {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
-                            // If bar is long enough, put label inside with more padding
-                            return value / max > 0.25 ? 'start' : 'end';
+                            // If bar is long enough, put label inside
+                            return value / max > 0.3 ? 'start' : 'end';
                         },
                         offset: (context) => {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
-                            // More offset for labels inside bars to prevent clipping
-                            return value / max > 0.25 ? -50 : 4;
+                            // Offset for labels inside bars to prevent clipping
+                            return value / max > 0.3 ? 10 : 4;
                         },
                         formatter: (value) => formatCurrency(value),
                         color: (context) => {
                             const value = context.dataset.data[context.dataIndex];
                             const max = Math.max(...context.dataset.data);
                             // White text for labels inside bars
-                            return value / max > 0.25 ? '#ffffff' : '#1a202c';
+                            return value / max > 0.3 ? '#ffffff' : '#1a202c';
                         },
                         font: {
                             weight: 'bold',

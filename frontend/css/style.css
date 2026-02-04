@@ -136,6 +136,13 @@ body {
     letter-spacing: 0.5px;
 }
 
+.stat-sublabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
 /* Table */
 .table-container {
     background: var(--card-bg);
