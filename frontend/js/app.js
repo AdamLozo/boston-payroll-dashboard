@@ -269,7 +269,7 @@ async function loadDepartmentChart() {
     }
 }
 
-// Earnings composition donut chart
+// Earnings composition bar chart
 async function loadEarningsChart() {
     try {
         let url = `${API_BASE}/api/earnings-breakdown?year=${currentYear}`;
@@ -288,10 +288,11 @@ async function loadEarningsChart() {
         }
 
         window.earningsChart = new Chart(ctx, {
-            type: 'doughnut',
+            type: 'bar',
             data: {
                 labels: ['Regular', 'Overtime', 'Detail', 'Retro', 'Other', 'Injured', 'Quinn Ed'],
                 datasets: [{
+                    label: 'Percentage',
                     data: [
                         data.percentages.regular,
                         data.percentages.overtime,
@@ -315,18 +316,24 @@ async function loadEarningsChart() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '60%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        display: false
                     },
                     tooltip: {
                         callbacks: {
                             label: (context) => {
-                                const label = context.label || '';
-                                const value = context.parsed || 0;
-                                return `${label}: ${value.toFixed(1)}%`;
+                                const value = context.parsed.y || 0;
+                                return `${value.toFixed(1)}%`;
                             }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => value + '%'
                         }
                     }
                 }
