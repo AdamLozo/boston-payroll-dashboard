@@ -73,6 +73,7 @@ def get_departments(year: int = 2024) -> List[Dict[str, Any]]:
                     COUNT(*) as employee_count,
                     SUM(total_gross) as total_earnings,
                     AVG(total_gross) as avg_earnings,
+                    AVG(overtime) as avg_overtime,
                     SUM(overtime) as total_overtime,
                     SUM(detail) as total_detail
                 FROM payroll_earnings

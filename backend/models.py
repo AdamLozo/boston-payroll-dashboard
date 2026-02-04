@@ -33,6 +33,7 @@ class DepartmentStats(BaseModel):
     employee_count: int
     total_earnings: Decimal
     avg_earnings: Decimal
+    avg_overtime: Decimal
     total_overtime: Decimal
     total_detail: Decimal
 
