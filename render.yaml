@@ -15,8 +15,9 @@ services:
   # Frontend Static Site
   - type: static
     name: boston-payroll-frontend
-    buildCommand: echo "No build needed for static site"
-    staticPublishPath: ./frontend
+    rootDir: frontend
+    buildCommand: ":"
+    staticPublishPath: .
     routes:
       - type: rewrite
         source: /*
