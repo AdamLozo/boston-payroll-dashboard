@@ -253,12 +253,27 @@ async function loadDepartmentChart() {
                         callbacks: {
                             label: (context) => formatCurrency(context.raw)
                         }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: (value) => formatCurrency(value),
+                        color: '#1a202c',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        }
                     }
                 },
                 scales: {
                     x: {
+                        display: false
+                    },
+                    y: {
                         ticks: {
-                            callback: value => formatCurrency(value)
+                            font: {
+                                size: 11
+                            }
                         }
                     }
                 }
@@ -327,13 +342,27 @@ async function loadEarningsChart() {
                                 return `${value.toFixed(1)}%`;
                             }
                         }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: (value) => value.toFixed(1) + '%',
+                        color: '#1a202c',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        }
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
+                        display: false
+                    },
+                    x: {
                         ticks: {
-                            callback: value => value + '%'
+                            font: {
+                                size: 11
+                            }
                         }
                     }
                 }
