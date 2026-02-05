@@ -60,7 +60,7 @@ def list_employees(
     earnings_type: Optional[str] = Query(default=None),
     sort_by: str = Query(default="total_gross"),
     sort_order: str = Query(default="desc", pattern="^(asc|desc)$"),
-    limit: int = Query(default=50, ge=1, le=5000),
+    limit: int = Query(default=50, ge=1, le=30000),
     offset: int = Query(default=0, ge=0)
 ):
     """Get employees with filters and pagination."""
@@ -151,7 +151,7 @@ def export_employees(
             earnings_type=earnings_type,
             sort_by="name",
             sort_order="asc",
-            limit=5000,
+            limit=30000,
             offset=0
         )
 

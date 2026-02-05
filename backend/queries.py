@@ -22,8 +22,8 @@ def get_employees(
     if sort_order not in ['asc', 'desc']:
         sort_order = 'desc'
 
-    if limit > 5000:
-        limit = 5000
+    if limit > 30000:
+        limit = 30000
 
     # Valid earnings type columns for filtering
     valid_earnings_types = ['regular', 'overtime', 'detail', 'retro', 'other', 'injured', 'quinn_education']

@@ -138,7 +138,7 @@ async function loadData() {
 // Load employees data
 async function loadEmployees() {
     try {
-        let url = `${API_BASE}/api/employees?year=${currentYear}&limit=5000`;
+        let url = `${API_BASE}/api/employees?year=${currentYear}&limit=30000`;
         if (currentDepartment) {
             url += `&department=${encodeURIComponent(currentDepartment)}`;
         }
