@@ -168,6 +168,13 @@ function initializeGrid() {
             valueFormatter: params => formatCurrencyFull(params.value)
         },
         {
+            field: 'retro',
+            headerName: 'Retro',
+            width: 110,
+            type: 'numericColumn',
+            valueFormatter: params => formatCurrencyFull(params.value)
+        },
+        {
             field: 'overtime',
             headerName: 'Overtime',
             width: 120,
@@ -177,6 +184,20 @@ function initializeGrid() {
         {
             field: 'detail',
             headerName: 'Detail',
+            width: 110,
+            type: 'numericColumn',
+            valueFormatter: params => formatCurrencyFull(params.value)
+        },
+        {
+            field: 'injured',
+            headerName: 'Injured',
+            width: 110,
+            type: 'numericColumn',
+            valueFormatter: params => formatCurrencyFull(params.value)
+        },
+        {
+            field: 'quinn_education',
+            headerName: 'Quinn/Ed',
             width: 110,
             type: 'numericColumn',
             valueFormatter: params => formatCurrencyFull(params.value)
