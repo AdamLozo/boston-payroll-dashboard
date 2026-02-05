@@ -22,10 +22,15 @@ const earningsTypeMap = {
     'Quinn Ed': 'quinn_education'
 };
 
-// Format currency
+// Format currency (abbreviated with M/K, commas for billions)
 function formatCurrency(value) {
     if (value >= 1000000) {
-        return '$' + (value / 1000000).toFixed(1) + 'M';
+        const millions = value / 1000000;
+        // Add commas if >= 1000M (1 billion)
+        const formatted = millions >= 1000
+            ? millions.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+            : millions.toFixed(1);
+        return '$' + formatted + 'M';
     } else if (value >= 1000) {
         return '$' + (value / 1000).toFixed(0) + 'K';
     }
@@ -291,7 +296,7 @@ async function loadStats() {
         document.getElementById('stat-employees').textContent =
             stats.total_employees.toLocaleString();
         document.getElementById('stat-payroll').textContent =
-            formatCurrencyFull(stats.total_payroll);
+            formatCurrency(stats.total_payroll);
         document.getElementById('stat-average').textContent =
             formatCurrencyFull(stats.avg_salary);
         document.getElementById('stat-overtime').textContent =
