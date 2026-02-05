@@ -291,7 +291,7 @@ async function loadStats() {
         document.getElementById('stat-employees').textContent =
             stats.total_employees.toLocaleString();
         document.getElementById('stat-payroll').textContent =
-            formatCurrency(stats.total_payroll);
+            formatCurrencyFull(stats.total_payroll);
         document.getElementById('stat-average').textContent =
             formatCurrencyFull(stats.avg_salary);
         document.getElementById('stat-overtime').textContent =
