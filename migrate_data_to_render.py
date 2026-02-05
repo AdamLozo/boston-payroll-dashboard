@@ -1,14 +1,19 @@
 """
 Migrate payroll data from local PostgreSQL to Render PostgreSQL
 """
+import os
 import psycopg2
 from psycopg2.extras import execute_values, RealDictCursor
 
-# Source: Local PostgreSQL
-LOCAL_DB = "postgresql://postgres:D01&ozo$866A@localhost:5432/boston_permits"
+# Source: Local PostgreSQL - set via environment variable
+LOCAL_DB = os.environ.get("LOCAL_DATABASE_URL")
+if not LOCAL_DB:
+    raise ValueError("LOCAL_DATABASE_URL environment variable is required")
 
-# Target: Render PostgreSQL
-RENDER_DB = "postgresql://dashboard:iFtQwJtXDWgXQjxnZqPWuGPXdERmOV72@dpg-d61893ggjchc73evihmg-a.oregon-postgres.render.com/boston_permits"
+# Target: Render PostgreSQL - set via environment variable
+RENDER_DB = os.environ.get("RENDER_DATABASE_URL")
+if not RENDER_DB:
+    raise ValueError("RENDER_DATABASE_URL environment variable is required")
 
 def create_table(conn):
     """Create payroll_earnings table on Render"""

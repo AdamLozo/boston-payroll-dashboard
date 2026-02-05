@@ -5,7 +5,7 @@ from typing import Optional
 import io
 import csv
 
-from models import (
+from backend.models import (
     EmployeeListResponse,
     DepartmentsResponse,
     Stats,
@@ -13,7 +13,7 @@ from models import (
     YearsResponse,
     HealthResponse
 )
-from queries import (
+from backend.queries import (
     get_employees,
     get_departments,
     get_stats,
