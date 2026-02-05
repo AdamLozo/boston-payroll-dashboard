@@ -152,6 +152,20 @@ body {
     margin-bottom: 24px;
 }
 
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 16px;
+}
+
+.table-header h3 {
+    font-size: 1.1rem;
+    color: var(--primary);
+    margin: 0;
+}
+
 /* Charts */
 .charts-grid {
     display: grid;

@@ -38,8 +38,6 @@
                 <option value="">All Departments</option>
             </select>
 
-            <input type="text" id="search-input" class="search-input" placeholder="🔍 Search name or title...">
-
             <button id="export-btn" class="export-btn">Export CSV</button>
         </div>
 
@@ -85,6 +83,10 @@
 
         <!-- Data Table -->
         <div class="table-container">
+            <div class="table-header">
+                <h3>Employee Earnings</h3>
+                <input type="text" id="search-input" class="search-input" placeholder="🔍 Search name or title...">
+            </div>
             <div id="employees-grid" class="ag-theme-alpine" style="height: 600px; width: 100%;"></div>
         </div>
 
