@@ -6,6 +6,7 @@ def get_employees(
     year: int = 2024,
     department: Optional[str] = None,
     search: Optional[str] = None,
+    earnings_type: Optional[str] = None,
     sort_by: str = "total_gross",
     sort_order: str = "desc",
     limit: int = 50,
@@ -24,6 +25,9 @@ def get_employees(
     if limit > 5000:
         limit = 5000
 
+    # Valid earnings type columns for filtering
+    valid_earnings_types = ['regular', 'overtime', 'detail', 'retro', 'other', 'injured', 'quinn_education']
+
     with get_db_connection() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             # Build WHERE clause
@@ -38,6 +42,10 @@ def get_employees(
                 where_clauses.append("(name ILIKE %s OR title ILIKE %s)")
                 search_param = f"%{search}%"
                 params.extend([search_param, search_param])
+
+            # Filter by earnings type (employees with non-zero values in that category)
+            if earnings_type and earnings_type in valid_earnings_types:
+                where_clauses.append(f"{earnings_type} > 0")
 
             where_sql = " AND ".join(where_clauses)
 

@@ -6,9 +6,21 @@ const API_BASE = window.location.hostname === 'localhost'
 // Global state
 let currentYear = 2024;
 let currentDepartment = '';
+let currentEarningsType = '';
 let employeesData = [];
 let grid = null;
 let isFilteringFromChart = false; // Prevent circular filtering
+
+// Earnings type mapping for display and API
+const earningsTypeMap = {
+    'Regular': 'regular',
+    'Overtime': 'overtime',
+    'Detail': 'detail',
+    'Retro': 'retro',
+    'Other': 'other',
+    'Injured': 'injured',
+    'Quinn Ed': 'quinn_education'
+};
 
 // Format currency
 function formatCurrency(value) {
@@ -32,13 +44,21 @@ function updateTitles() {
     const deptTitle = document.querySelector('.chart-card:first-child h3');
     const earningsTitle = document.querySelector('.chart-card:last-child h3');
 
-    if (currentDepartment) {
-        deptTitle.textContent = `Top Departments by Total Earnings (${currentYear})`;
-        earningsTitle.textContent = `${currentDepartment} - Earnings Composition (${currentYear})`;
+    // Build earnings title with active filters
+    let earningsTitleText = '';
+    if (currentDepartment && currentEarningsType) {
+        earningsTitleText = `${currentDepartment} - Earnings Composition (${currentYear})`;
+    } else if (currentDepartment) {
+        earningsTitleText = `${currentDepartment} - Earnings Composition (${currentYear})`;
+    } else if (currentEarningsType) {
+        const displayName = Object.keys(earningsTypeMap).find(key => earningsTypeMap[key] === currentEarningsType) || currentEarningsType;
+        earningsTitleText = `Earnings Composition - ${displayName} Selected (${currentYear})`;
     } else {
-        deptTitle.textContent = `Top Departments by Total Earnings (${currentYear})`;
-        earningsTitle.textContent = `Earnings Composition (${currentYear})`;
+        earningsTitleText = `Earnings Composition (${currentYear})`;
     }
+
+    deptTitle.textContent = `Top Departments by Total Earnings (${currentYear})`;
+    earningsTitle.textContent = earningsTitleText;
 }
 
 // Initialize on page load
@@ -116,6 +136,9 @@ async function loadEmployees() {
         let url = `${API_BASE}/api/employees?year=${currentYear}&limit=5000`;
         if (currentDepartment) {
             url += `&department=${encodeURIComponent(currentDepartment)}`;
+        }
+        if (currentEarningsType) {
+            url += `&earnings_type=${encodeURIComponent(currentEarningsType)}`;
         }
 
         const response = await fetch(url);
@@ -450,10 +473,15 @@ async function loadEarningsChart() {
             window.earningsChart.destroy();
         }
 
+        const earningsLabels = ['Regular', 'Overtime', 'Detail', 'Retro', 'Other', 'Injured', 'Quinn Ed'];
+        const earningsKeys = ['regular', 'overtime', 'detail', 'retro', 'other', 'injured', 'quinn_education'];
+        const baseColors = ['#4299e1', '#ed8936', '#9f7aea', '#48bb78', '#a0aec0', '#f56565', '#38b2ac'];
+        const selectedColors = ['#1a365d', '#c05621', '#6b46c1', '#276749', '#4a5568', '#c53030', '#234e52'];
+
         window.earningsChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Regular', 'Overtime', 'Detail', 'Retro', 'Other', 'Injured', 'Quinn Ed'],
+                labels: earningsLabels,
                 datasets: [{
                     label: 'Percentage',
                     data: [
@@ -474,20 +502,31 @@ async function loadEarningsChart() {
                         data.breakdown.injured,
                         data.breakdown.quinn_education
                     ],
-                    backgroundColor: [
-                        '#4299e1',
-                        '#ed8936',
-                        '#9f7aea',
-                        '#48bb78',
-                        '#a0aec0',
-                        '#f56565',
-                        '#38b2ac'
-                    ]
+                    earningsKeys: earningsKeys,
+                    backgroundColor: earningsKeys.map((key, i) =>
+                        key === currentEarningsType ? selectedColors[i] : baseColors[i]
+                    )
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const earningsKey = earningsKeys[index];
+
+                        // Toggle filter
+                        if (currentEarningsType === earningsKey) {
+                            currentEarningsType = '';
+                        } else {
+                            currentEarningsType = earningsKey;
+                        }
+
+                        // Reload data (charts will update colors, employees will filter)
+                        loadData();
+                    }
+                },
                 plugins: {
                     legend: {
                         display: false
@@ -498,6 +537,9 @@ async function loadEarningsChart() {
                                 const index = context.dataIndex;
                                 const total = window.earningsChart.data.datasets[0].totals[index];
                                 return `Total: ${formatCurrency(total)}`;
+                            },
+                            afterLabel: () => {
+                                return 'Click to filter employees';
                             }
                         }
                     },
@@ -537,6 +579,9 @@ async function exportCSV() {
         let url = `${API_BASE}/api/export?year=${currentYear}`;
         if (currentDepartment) {
             url += `&department=${encodeURIComponent(currentDepartment)}`;
+        }
+        if (currentEarningsType) {
+            url += `&earnings_type=${encodeURIComponent(currentEarningsType)}`;
         }
 
         window.location.href = url;

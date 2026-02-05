@@ -57,6 +57,7 @@ def list_employees(
     year: int = Query(default=2024, ge=2020, le=2024),
     department: Optional[str] = Query(default=None),
     search: Optional[str] = Query(default=None),
+    earnings_type: Optional[str] = Query(default=None),
     sort_by: str = Query(default="total_gross"),
     sort_order: str = Query(default="desc", pattern="^(asc|desc)$"),
     limit: int = Query(default=50, ge=1, le=5000),
@@ -68,6 +69,7 @@ def list_employees(
             year=year,
             department=department,
             search=search,
+            earnings_type=earnings_type,
             sort_by=sort_by,
             sort_order=sort_order,
             limit=limit,
@@ -136,7 +138,8 @@ def list_years():
 def export_employees(
     year: int = Query(default=2024, ge=2020, le=2024),
     department: Optional[str] = Query(default=None),
-    search: Optional[str] = Query(default=None)
+    search: Optional[str] = Query(default=None),
+    earnings_type: Optional[str] = Query(default=None)
 ):
     """Export filtered employees as CSV."""
     try:
@@ -145,6 +148,7 @@ def export_employees(
             year=year,
             department=department,
             search=search,
+            earnings_type=earnings_type,
             sort_by="name",
             sort_order="asc",
             limit=5000,
