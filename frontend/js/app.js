@@ -4,7 +4,7 @@ const API_BASE = window.location.hostname === 'localhost'
     : 'https://boston-payroll-api.onrender.com';
 
 // Global state
-let currentYear = 2024;
+let currentYear = 2025;
 let currentDepartment = '';
 let currentEarningsType = '';
 let employeesData = [];

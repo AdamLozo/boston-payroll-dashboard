@@ -12,6 +12,7 @@ from backend.database import get_db_connection
 
 # Resource IDs for each year
 RESOURCE_IDS = {
+    2025: "ca45bfb5-7bc2-4756-a862-77014547faf8",
     2024: "579a4be3-9ca7-4183-bc95-7d67ee715b6d",
     2023: "6b3c5333-1dcb-4b3d-9cd7-6a03fb526da7",
     2022: "63ac638b-36c4-487d-9453-1d83eb5090d2",
@@ -116,6 +117,10 @@ def parse_csv(csv_path, year):
 
     # Add year column
     df['year'] = year
+
+    # Drop rows with no employee name (handles Excel padding with empty rows)
+    df = df.dropna(subset=['name'])
+    df = df[df['name'].astype(str).str.strip() != '']
 
     # Clean text fields
     text_fields = ['name', 'department', 'title', 'zip_code']

@@ -24,7 +24,7 @@ from backend.queries import (
 
 app = FastAPI(
     title="Boston Payroll API",
-    description="API for Boston city employee earnings data (2020-2024)",
+    description="API for Boston city employee earnings data (2020-2025)",
     version="1.0.0"
 )
 
@@ -54,7 +54,7 @@ def health():
 
 @app.get("/api/employees", response_model=EmployeeListResponse)
 def list_employees(
-    year: int = Query(default=2024, ge=2020, le=2024),
+    year: int = Query(default=2025, ge=2020, le=2025),
     department: Optional[str] = Query(default=None),
     search: Optional[str] = Query(default=None),
     earnings_type: Optional[str] = Query(default=None),
@@ -88,7 +88,7 @@ def list_employees(
 
 @app.get("/api/departments", response_model=DepartmentsResponse)
 def list_departments(
-    year: int = Query(default=2024, ge=2020, le=2024)
+    year: int = Query(default=2025, ge=2020, le=2025)
 ):
     """Get department aggregations."""
     try:
@@ -102,7 +102,7 @@ def list_departments(
 
 @app.get("/api/stats", response_model=Stats)
 def get_statistics(
-    year: int = Query(default=2024, ge=2020, le=2024),
+    year: int = Query(default=2025, ge=2020, le=2025),
     department: Optional[str] = Query(default=None)
 ):
     """Get summary statistics."""
@@ -113,7 +113,7 @@ def get_statistics(
 
 @app.get("/api/earnings-breakdown", response_model=EarningsBreakdown)
 def earnings_breakdown(
-    year: int = Query(default=2024, ge=2020, le=2024),
+    year: int = Query(default=2025, ge=2020, le=2025),
     department: Optional[str] = Query(default=None)
 ):
     """Get earnings composition breakdown."""
@@ -136,7 +136,7 @@ def list_years():
 
 @app.get("/api/export")
 def export_employees(
-    year: int = Query(default=2024, ge=2020, le=2024),
+    year: int = Query(default=2025, ge=2020, le=2025),
     department: Optional[str] = Query(default=None),
     search: Optional[str] = Query(default=None),
     earnings_type: Optional[str] = Query(default=None)

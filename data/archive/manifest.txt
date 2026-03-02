@@ -1,0 +1,10 @@
+Boston Payroll Data Archive
+Archived at: 2026-03-01T19:07:26.516158
+Years: [2020, 2021, 2022, 2023, 2024]
+
+Files:
+  boston_payroll_2020.csv  (2.6 MB)
+  boston_payroll_2021.csv  (2.6 MB)
+  boston_payroll_2022.csv  (2.7 MB)
+  boston_payroll_2023.csv  (3.0 MB)
+  boston_payroll_2024.csv  (3.0 MB)

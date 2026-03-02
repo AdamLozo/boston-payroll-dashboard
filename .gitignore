@@ -7,6 +7,10 @@ venv/
 .DS_Store
 /tmp/
 
+# Raw data downloads (large CSVs from Analyze Boston)
+data/employee-earnings-report-*.csv
+data/employee-earnings-report-*.xlsx
+
 # One-time migration scripts (may contain credentials)
 load_data_render.py
 migrate_data_to_render.py

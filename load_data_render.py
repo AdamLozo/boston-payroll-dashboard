@@ -231,6 +231,7 @@ def main():
         ('employee-earnings-report-2022.csv', 2022),
         ('employee-earnings-report-2023.xlsx', 2023),
         ('employee-earnings-report-2024.csv', 2024),
+        ('employee-earnings-report-2025.csv', 2025),
     ]
 
     total_records = 0
